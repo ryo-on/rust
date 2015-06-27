@@ -482,6 +482,56 @@ const char * rust_current_exe() {
     return (self);
 }
 
+#elif defined(__NetBSD__)
+
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <limits.h>
+
+const char * rust_current_exe() {
+    static char *self = NULL;
+
+    if (self == NULL) {
+        int mib[4];
+        char **argv = NULL;
+        size_t argv_len;
+
+        /* initialize mib */
+        mib[0] = CTL_KERN;
+        mib[1] = KERN_PROC_ARGS;
+        mib[2] = getpid();
+        mib[3] = KERN_PROC_ARGV;
+
+        /* request KERN_PROC_ARGV size */
+        argv_len = 0;
+        if (sysctl(mib, 4, NULL, &argv_len, NULL, 0) == -1)
+            return (NULL);
+
+        /* allocate size */
+        if ((argv = malloc(argv_len)) == NULL)
+            return (NULL);
+
+        /* request KERN_PROC_ARGV */
+        if (sysctl(mib, 4, argv, &argv_len, NULL, 0) == -1) {
+            free(argv);
+            return (NULL);
+        }
+
+        /* get realpath if possible */
+        if ((argv[0] != NULL) && ((*argv[0] == '.') || (*argv[0] == '/')
+                                || (strstr(argv[0], "/") != NULL)))
+
+            self = realpath(argv[0], NULL);
+        else
+            self = NULL;
+
+        /* cleanup */
+        free(argv);
+    }
+
+    return (self);
+}
+
 #endif
 
 //
