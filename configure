@@ -428,7 +428,7 @@ case $CFG_OSTYPE in
         ;;
 
     NetBSD)
-        CFG_OSTYPE=-netbsd
+        CFG_OSTYPE=unknown-netbsd
         ;;
 
 # Thad's Cygwin identifiers below
