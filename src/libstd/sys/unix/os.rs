@@ -73,6 +73,12 @@ pub fn errno() -> i32 {
         __errno()
     }
 
+    #[cfg(target_os = "netbsd")]
+    unsafe fn errno_location() -> *const c_int {
+        extern { fn __errno() -> *const c_int; }
+        __errno()
+    }
+
     #[cfg(any(target_os = "linux", target_os = "android"))]
     unsafe fn errno_location() -> *const c_int {
         extern { fn __errno_location() -> *const c_int; }
@@ -214,7 +220,7 @@ pub fn current_exe() -> io::Result<PathBuf> {
     ::fs::read_link("/proc/curproc/file")
 }
 
-#[cfg(any(target_os = "bitrig", target_os = "openbsd"))]
+#[cfg(any(target_os = "bitrig", target_os = "openbsd", target_os = "netbsd"))]
 pub fn current_exe() -> io::Result<PathBuf> {
     use sync::StaticMutex;
     static LOCK: StaticMutex = StaticMutex::new();
@@ -356,7 +362,8 @@ pub fn args() -> Args {
           target_os = "freebsd",
           target_os = "dragonfly",
           target_os = "bitrig",
-          target_os = "openbsd"))]
+          target_os = "openbsd",
+          target_os = "netbsd"))]
 pub fn args() -> Args {
     use rt;
     let bytes = rt::args::clone().unwrap_or(Vec::new());
