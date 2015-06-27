@@ -904,7 +904,7 @@ mod tests {
 
     // FIXME: re-enabled bitrig/openbsd tests once their socket timeout code
     //        no longer has rounding errors.
-    #[cfg_attr(any(target_os = "bitrig", target_os = "openbsd"), ignore)]
+    #[cfg_attr(any(target_os = "bitrig", target_os = "openbsd", target_os = "netbsd"), ignore)]
     #[test]
     fn timeouts() {
         let addr = next_test_ip4();

@@ -105,6 +105,7 @@ macro_rules! __scoped_thread_local_inner {
                            target_os = "android",
                            target_os = "ios",
                            target_os = "openbsd",
+                           target_os = "netbsd",
                            target_arch = "aarch64")),
                    thread_local)]
         static _KEY: ::std::thread::__ScopedKeyInner<$t> =
@@ -216,6 +217,7 @@ impl<T> ScopedKey<T> {
               target_os = "android",
               target_os = "ios",
               target_os = "openbsd",
+              target_os = "netbsd",
               target_arch = "aarch64",
               no_elf_tls)))]
 #[doc(hidden)]
@@ -239,6 +241,7 @@ mod imp {
           target_os = "android",
           target_os = "ios",
           target_os = "openbsd",
+          target_os = "netbsd",
           target_arch = "aarch64",
           no_elf_tls))]
 #[doc(hidden)]

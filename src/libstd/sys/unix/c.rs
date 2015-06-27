@@ -34,7 +34,8 @@ use libc;
           target_os = "freebsd",
           target_os = "dragonfly",
           target_os = "bitrig",
-          target_os = "openbsd"))]
+          target_os = "openbsd",
+          target_os = "netbsd"))]
 pub const FIOCLEX: libc::c_ulong = 0x20006601;
 
 #[cfg(any(all(target_os = "linux",
@@ -60,7 +61,8 @@ pub const _SC_GETPW_R_SIZE_MAX: libc::c_int = 70;
           target_os = "dragonfly"))]
 pub const _SC_GETPW_R_SIZE_MAX: libc::c_int = 71;
 #[cfg(any(target_os = "bitrig",
-          target_os = "openbsd"))]
+          target_os = "openbsd",
+          target_os = "netbsd"))]
 pub const _SC_GETPW_R_SIZE_MAX: libc::c_int = 101;
 #[cfg(target_os = "android")]
 pub const _SC_GETPW_R_SIZE_MAX: libc::c_int = 0x0048;
@@ -82,7 +84,8 @@ pub struct passwd {
           target_os = "freebsd",
           target_os = "dragonfly",
           target_os = "bitrig",
-          target_os = "openbsd"))]
+          target_os = "openbsd",
+          target_os = "netbsd"))]
 pub struct passwd {
     pub pw_name: *mut libc::c_char,
     pub pw_passwd: *mut libc::c_char,
@@ -321,7 +324,8 @@ mod signal_os {
           target_os = "freebsd",
           target_os = "dragonfly",
           target_os = "bitrig",
-          target_os = "openbsd"))]
+          target_os = "openbsd",
+          target_os = "netbsd"))]
 mod signal_os {
     use libc;
     use super::sighandler_t;
@@ -348,7 +352,7 @@ mod signal_os {
     pub struct sigset_t {
         bits: [u32; 4],
     }
-    #[cfg(any(target_os = "bitrig", target_os = "openbsd"))]
+    #[cfg(any(target_os = "bitrig", target_os = "openbsd", target_os = "netbsd"))]
     pub type sigset_t = libc::c_uint;
 
     // This structure has more fields, but we're not all that interested in
@@ -365,7 +369,7 @@ mod signal_os {
         pub _status: libc::c_int,
         pub si_addr: *mut libc::c_void
     }
-    #[cfg(any(target_os = "bitrig", target_os = "openbsd"))]
+    #[cfg(any(target_os = "bitrig", target_os = "openbsd", target_os = "netbsd"))]
     #[repr(C)]
     pub struct siginfo {
         pub si_signo: libc::c_int,
@@ -375,7 +379,8 @@ mod signal_os {
     }
 
     #[cfg(any(target_os = "macos", target_os = "ios",
-              target_os = "bitrig", target_os = "openbsd"))]
+              target_os = "bitrig", target_os = "openbsd",
+              target_os = "netbsd"))]
     #[repr(C)]
     pub struct sigaction {
         pub sa_sigaction: sighandler_t,

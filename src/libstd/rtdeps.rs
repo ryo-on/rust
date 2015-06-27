@@ -43,6 +43,11 @@ extern {}
 #[link(name = "pthread")]
 extern {}
 
+#[cfg(target_os = "netbsd")]
+#[link(name = "execinfo")]
+#[link(name = "pthread")]
+extern {}
+
 #[cfg(target_os = "macos")]
 #[link(name = "System")]
 extern {}

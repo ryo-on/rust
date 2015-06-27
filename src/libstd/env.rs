@@ -634,6 +634,7 @@ pub mod consts {
     /// - dragonfly
     /// - bitrig
     /// - openbsd
+    /// - netbsd
     /// - android
     /// - windows
     #[stable(feature = "env", since = "1.0.0")]
@@ -763,6 +764,17 @@ mod os {
 mod os {
     pub const FAMILY: &'static str = "unix";
     pub const OS: &'static str = "openbsd";
+    pub const DLL_PREFIX: &'static str = "lib";
+    pub const DLL_SUFFIX: &'static str = ".so";
+    pub const DLL_EXTENSION: &'static str = "so";
+    pub const EXE_SUFFIX: &'static str = "";
+    pub const EXE_EXTENSION: &'static str = "";
+}
+
+#[cfg(target_os = "netbsd")]
+mod os {
+    pub const FAMILY: &'static str = "unix";
+    pub const OS: &'static str = "netbsd";
     pub const DLL_PREFIX: &'static str = "lib";
     pub const DLL_SUFFIX: &'static str = ".so";
     pub const DLL_EXTENSION: &'static str = "so";

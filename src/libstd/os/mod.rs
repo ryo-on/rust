@@ -25,5 +25,6 @@
 #[cfg(target_os = "macos")]     pub mod macos;
 #[cfg(target_os = "nacl")]      pub mod nacl;
 #[cfg(target_os = "openbsd")]   pub mod openbsd;
+#[cfg(target_os = "netbsd")]    pub mod netbsd;
 
 pub mod raw;

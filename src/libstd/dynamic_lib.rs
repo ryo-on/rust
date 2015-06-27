@@ -160,7 +160,8 @@ mod tests {
               target_os = "freebsd",
               target_os = "dragonfly",
               target_os = "bitrig",
-              target_os = "openbsd"))]
+              target_os = "openbsd",
+              target_os = "netbsd"))]
     fn test_errors_do_not_crash() {
         // Open /dev/null as a library to get an error, and make sure
         // that only causes an error, and not a crash.
@@ -179,7 +180,8 @@ mod tests {
           target_os = "freebsd",
           target_os = "dragonfly",
           target_os = "bitrig",
-          target_os = "openbsd"))]
+          target_os = "openbsd",
+          target_os = "netbsd"))]
 mod dl {
     use prelude::v1::*;
 
