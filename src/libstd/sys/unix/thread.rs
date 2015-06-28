@@ -105,8 +105,7 @@ impl Thread {
     #[cfg(any(target_os = "freebsd",
               target_os = "dragonfly",
               target_os = "bitrig",
-              target_os = "openbsd",
-              target_os = "netbsd"))]
+              target_os = "openbsd"))]
     pub fn set_name(name: &str) {
         extern {
             fn pthread_set_name_np(tid: libc::pthread_t,
@@ -118,7 +117,7 @@ impl Thread {
         }
     }
 
-    #[cfg(any(target_os = "macos", target_os = "ios"))]
+    #[cfg(any(target_os = "macos", target_os = "ios", target_os = "netbsd"))]
     pub fn set_name(name: &str) {
         extern {
             fn pthread_setname_np(name: *const libc::c_char) -> libc::c_int;
