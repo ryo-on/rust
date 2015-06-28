@@ -261,7 +261,7 @@ pub mod guard {
          pthread_get_stacksize_np(pthread_self())) as usize
     }
 
-    #[cfg(any(target_os = "openbsd", target_os = "bitrig", target_os = "netbsd"))]
+    #[cfg(any(target_os = "openbsd", target_os = "bitrig"))]
     pub unsafe fn current() -> usize {
         #[repr(C)]
         struct stack_t {
@@ -288,7 +288,7 @@ pub mod guard {
         }
     }
 
-    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[cfg(any(target_os = "linux", target_os = "android", target_os = "netbsd"))]
     pub unsafe fn current() -> usize {
         let mut attr: libc::pthread_attr_t = mem::zeroed();
         assert_eq!(pthread_getattr_np(pthread_self(), &mut attr), 0);
@@ -305,7 +305,7 @@ pub mod guard {
         stackaddr as usize + guardsize as usize
     }
 
-    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[cfg(any(target_os = "linux", target_os = "android", target_os = "netbsd"))]
     extern {
         fn pthread_getattr_np(native: libc::pthread_t,
                               attr: *mut libc::pthread_attr_t) -> libc::c_int;
