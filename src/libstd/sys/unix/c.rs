@@ -61,9 +61,10 @@ pub const _SC_GETPW_R_SIZE_MAX: libc::c_int = 70;
           target_os = "dragonfly"))]
 pub const _SC_GETPW_R_SIZE_MAX: libc::c_int = 71;
 #[cfg(any(target_os = "bitrig",
-          target_os = "openbsd",
-          target_os = "netbsd"))]
+          target_os = "openbsd"))]
 pub const _SC_GETPW_R_SIZE_MAX: libc::c_int = 101;
+#[cfg(target_os = "netbsd")]
+pub const _SC_GETPW_R_SIZE_MAX: libc::c_int = 48;
 #[cfg(target_os = "android")]
 pub const _SC_GETPW_R_SIZE_MAX: libc::c_int = 0x0048;
 
@@ -347,12 +348,12 @@ mod signal_os {
     #[cfg(any(target_os = "macos",
               target_os = "ios"))]
     pub type sigset_t = u32;
-    #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
+    #[cfg(any(target_os = "freebsd", target_os = "dragonfly", target_os = "netbsd"))]
     #[repr(C)]
     pub struct sigset_t {
         bits: [u32; 4],
     }
-    #[cfg(any(target_os = "bitrig", target_os = "openbsd", target_os = "netbsd"))]
+    #[cfg(any(target_os = "bitrig", target_os = "openbsd"))]
     pub type sigset_t = libc::c_uint;
 
     // This structure has more fields, but we're not all that interested in
@@ -369,12 +370,20 @@ mod signal_os {
         pub _status: libc::c_int,
         pub si_addr: *mut libc::c_void
     }
-    #[cfg(any(target_os = "bitrig", target_os = "openbsd", target_os = "netbsd"))]
+    #[cfg(any(target_os = "bitrig", target_os = "openbsd"))]
     #[repr(C)]
     pub struct siginfo {
         pub si_signo: libc::c_int,
         pub si_code: libc::c_int,
         pub si_errno: libc::c_int,
+        pub si_addr: *mut libc::c_void
+    }
+    #[cfg(target_os = "netbsd")]
+    #[repr(C)]
+    pub struct siginfo {
+        pub _signo: libc::c_int,
+        pub _code: libc::c_int,
+        pub _errno: libc::c_int,
         pub si_addr: *mut libc::c_void
     }
 
