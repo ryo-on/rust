@@ -132,7 +132,13 @@ extern {
 
     pub fn raise(signum: libc::c_int) -> libc::c_int;
 
+    #[cfg(not(target_os = "netbsd"))]
     pub fn sigaction(signum: libc::c_int,
+                     act: *const sigaction,
+                     oldact: *mut sigaction) -> libc::c_int;
+
+    #[cfg(target_os = "netbsd")]
+    pub fn __sigaction14(signum: libc::c_int,
                      act: *const sigaction,
                      oldact: *mut sigaction) -> libc::c_int;
 
@@ -353,6 +359,10 @@ mod signal_os {
     pub struct sigset_t {
         bits: [u32; 4],
     }
+    #[cfg(target_os = "netbsd")]
+    pub struct si_addr_t {
+        si_addr: libc::c_void,
+    }
     #[cfg(any(target_os = "bitrig", target_os = "openbsd"))]
     pub type sigset_t = libc::c_uint;
 
@@ -384,12 +394,11 @@ mod signal_os {
         pub _signo: libc::c_int,
         pub _code: libc::c_int,
         pub _errno: libc::c_int,
-        pub si_addr: *mut libc::c_void
+        pub si_addr: *mut si_addr_t,
     }
 
     #[cfg(any(target_os = "macos", target_os = "ios",
-              target_os = "bitrig", target_os = "openbsd",
-              target_os = "netbsd"))]
+              target_os = "bitrig", target_os = "openbsd"))]
     #[repr(C)]
     pub struct sigaction {
         pub sa_sigaction: sighandler_t,
@@ -397,7 +406,7 @@ mod signal_os {
         pub sa_flags: libc::c_int,
     }
 
-    #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
+    #[cfg(any(target_os = "freebsd", target_os = "dragonfly", target_os = "netbsd"))]
     #[repr(C)]
     pub struct sigaction {
         pub sa_sigaction: sighandler_t,

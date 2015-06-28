@@ -45,7 +45,12 @@ mod imp {
     use mem;
     use ptr;
     use intrinsics;
+    #[cfg(not(target_os = "netbsd"))]
     use sys::c::{siginfo, sigaction, SIGBUS, SIG_DFL,
+                 SA_SIGINFO, SA_ONSTACK, sigaltstack,
+                 SIGSTKSZ, sighandler_t, raise};
+    #[cfg(target_os = "netbsd")]
+    use sys::c::{siginfo, __sigaction14, sigaction, SIGBUS, SIG_DFL,
                  SA_SIGINFO, SA_ONSTACK, sigaltstack,
                  SIGSTKSZ, sighandler_t, raise};
     use libc;
@@ -97,6 +102,7 @@ mod imp {
 
     static mut MAIN_ALTSTACK: *mut libc::c_void = 0 as *mut libc::c_void;
 
+    #[cfg(not(target_os = "netbsd"))]
     pub unsafe fn init() {
         let psize = libc::sysconf(libc::consts::os::sysconf::_SC_PAGESIZE);
         if psize == -1 {
@@ -110,6 +116,26 @@ mod imp {
         action.sa_sigaction = signal_handler as sighandler_t;
         sigaction(SIGSEGV, &action, ptr::null_mut());
         sigaction(SIGBUS, &action, ptr::null_mut());
+
+        let handler = make_handler();
+        MAIN_ALTSTACK = handler._data;
+        mem::forget(handler);
+    }
+
+    #[cfg(target_os = "netbsd")]
+    pub unsafe fn init() {
+        let psize = libc::sysconf(libc::consts::os::sysconf::_SC_PAGESIZE);
+        if psize == -1 {
+            panic!("failed to get page size");
+        }
+
+        PAGE_SIZE = psize as usize;
+
+        let mut action: sigaction = mem::zeroed();
+        action.sa_flags = SA_SIGINFO | SA_ONSTACK;
+        action.sa_sigaction = signal_handler as sighandler_t;
+        __sigaction14(SIGSEGV, &action, ptr::null_mut());
+        __sigaction14(SIGBUS, &action, ptr::null_mut());
 
         let handler = make_handler();
         MAIN_ALTSTACK = handler._data;
